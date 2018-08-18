@@ -47,7 +47,13 @@ func (c *core) Write(ent zapcore.Entry, fs []zapcore.Field) error {
 
 	if !c.cfg.DisableStacktrace {
 		trace := raven.NewStacktrace(traceSkipFrames, traceContextLines, nil)
+
 		if trace != nil {
+			// it is ok for us:
+			for _, t := range trace.Frames {
+				t.InApp = true
+			}
+
 			packet.Interfaces = append(packet.Interfaces, trace)
 		}
 	}
